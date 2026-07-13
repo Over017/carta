@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Para ti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#180d16;
+    --bg-mid:#38122c;
+    --bg-glow:#6e2748;
+    --paper:#f7ecd9;
+    --paper-edge:#e6d3ab;
+    --ink:#3d2417;
+    --ink-soft:#5a3a26;
+    --gold:#cda45e;
+    --gold-soft:#e4c589;
+    --wax:#7a1a34;
+    --wax-light:#a3294a;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    padding:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 15%, var(--bg-glow) 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 50% 100%, var(--bg-mid) 0%, transparent 70%),
+      var(--bg-deep);
+    color:var(--ink);
+    font-family:'EB Garamond', serif;
+    overflow-x:hidden;
+  }
+
+  .sky{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+  }
+
+  .mote{
+    position:absolute;
+    bottom:-5%;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:radial-gradient(circle, var(--gold-soft) 0%, transparent 70%);
+    opacity:0.55;
+    animation:drift linear infinite;
+  }
+
+  @keyframes drift{
+    0%{ transform:translateY(0) translateX(0); opacity:0; }
+    10%{ opacity:0.6; }
+    90%{ opacity:0.5; }
+    100%{ transform:translateY(-110vh) translateX(var(--drift-x, 20px)); opacity:0; }
+  }
+
+  .stage{
+    position:relative;
+    z-index:1;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:6vh 20px;
+    text-align:center;
+  }
+
+  .eyebrow{
+    font-family:'Mrs Saint Delafield', cursive;
+    font-size:clamp(28px, 6vw, 40px);
+    color:var(--gold-soft);
+    margin:0 0 6px 0;
+    letter-spacing:0.5px;
+    text-shadow:0 0 18px rgba(228,197,137,0.35);
+  }
+
+  .hint{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(13px, 2.4vw, 16px);
+    color:#d8c3d1;
+    opacity:0.75;
+    margin:0 0 46px 0;
+    letter-spacing:0.5px;
+    animation:pulse 2.6s ease-in-out infinite;
+  }
+
+  @keyframes pulse{
+    0%,100%{ opacity:0.55; }
+    50%{ opacity:0.95; }
+  }
+
+  /* ---------- ENVELOPE ---------- */
+
+  .scene{
+    perspective:1400px;
+  }
+
+  .envelope-wrap{
+    position:relative;
+    width:min(86vw, 360px);
+    aspect-ratio:3.2 / 2.1;
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  .envelope-wrap:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:10px;
+    border-radius:6px;
+  }
+
+  .envelope-body{
+    position:absolute;
+    inset:0;
+    border-radius:6px;
+    background:linear-gradient(160deg, #ecdcbc 0%, var(--paper-edge) 55%, #ddc79a 100%);
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.65),
+      0 10px 25px -10px rgba(0,0,0,0.5);
+    overflow:hidden;
+  }
+
+  .envelope-body::before,
+  .envelope-body::after{
+    content:"";
+    position:absolute;
+    top:0;
+    width:52%;
+    height:100%;
+    background:linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0));
+  }
+
+  .envelope-body::before{
+    left:0;
+    clip-path:polygon(0 0, 100% 50%, 0 100%);
+    background:linear-gradient(120deg, rgba(255,255,255,0.25), rgba(0,0,0,0.06));
+  }
+
+  .envelope-body::after{
+    right:0;
+    clip-path:polygon(100% 0, 0 50%, 100% 100%);
+    background:linear-gradient(240deg, rgba(255,255,255,0.2), rgba(0,0,0,0.08));
+  }
+
+  .envelope-letter{
+    position:absolute;
+    left:6%;
+    right:6%;
+    bottom:8%;
+    top:14%;
+    background:
+      linear-gradient(180deg, #fffaf0 0%, var(--paper) 100%);
+    border-radius:3px;
+    box-shadow:0 -6px 18px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.1);
+    transform:translateY(6%);
+    transition:transform 1s cubic-bezier(.22,1,.36,1);
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:18px 14px 0;
+    z-index:2;
+  }
+
+  .envelope-letter span{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:13px;
+    color:var(--ink-soft);
+    letter-spacing:0.4px;
+  }
+
+  .envelope-flap{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:62%;
+    clip-path:polygon(0 0, 100% 0, 50% 100%);
+    background:linear-gradient(160deg, #f1e2c1 0%, #dcc79c 60%, #cbb384 100%);
+    transform-origin:top center;
+    transition:transform 1.1s cubic-bezier(.6,-0.28,.4,1.3), z-index 0s 0.55s;
+    z-index:3;
+    box-shadow:inset 0 -2px 6px rgba(0,0,0,0.08);
+  }
+
+  .wax-seal{
+    position:absolute;
+    top:38%;
+    left:50%;
+    width:52px;
+    height:52px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--wax-light) 0%, var(--wax) 55%, #4d0f21 100%);
+    box-shadow:0 4px 10px rgba(0,0,0,0.45), inset 0 -3px 6px rgba(0,0,0,0.35), inset 0 2px 4px rgba(255,255,255,0.15);
+    z-index:4;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:transform 0.5s ease, opacity 0.5s ease 0.15s;
+  }
+
+  .wax-seal svg{
+    width:22px;
+    height:22px;
+    fill:var(--gold-soft);
+    opacity:0.9;
+  }
+
+  /* open state */
+  .envelope-wrap.is-open .envelope-flap{
+    transform:rotateX(180deg);
+    z-index:1;
+  }
+
+  .envelope-wrap.is-open .envelope-letter{
+    transform:translateY(-62%) rotate(-1.5deg);
+  }
+
+  .envelope-wrap.is-open .wax-seal{
+    transform:translate(-50%,-50%) scale(1.3) rotate(12deg);
+    opacity:0;
+  }
+
+  /* ---------- LETTER OVERLAY ---------- */
+
+  .overlay{
+    position:fixed;
+    inset:0;
+    z-index:10;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:5vh 16px;
+    background:rgba(15,7,13,0.72);
+    backdrop-filter:blur(6px);
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.6s ease;
+  }
+
+  .overlay.is-visible{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .letter-paper{
+    position:relative;
+    width:min(640px, 92vw);
+    max-height:86vh;
+    overflow-y:auto;
+    background:
+      linear-gradient(180deg, #fffaf0 0%, var(--paper) 100%);
+    border-radius:4px;
+    box-shadow:0 40px 80px -20px rgba(0,0,0,0.6);
+    padding:clamp(32px, 6vw, 64px) clamp(24px, 7vw, 68px) 48px;
+    transform:translateY(24px) scale(0.97);
+    transition:transform 0.6s cubic-bezier(.22,1,.36,1);
+  }
+
+  .overlay.is-visible .letter-paper{
+    transform:translateY(0) scale(1);
+  }
+
+  .letter-paper::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0;
+    height:6px;
+    background:linear-gradient(90deg, transparent, var(--gold) 50%, transparent);
+    opacity:0.6;
+  }
+
+  .close-btn{
+    position:sticky;
+    top:0;
+    float:right;
+    margin:-8px -8px 0 0;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    border:1px solid rgba(61,36,23,0.25);
+    background:rgba(255,255,255,0.6);
+    color:var(--ink-soft);
+    font-size:18px;
+    line-height:1;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:background 0.25s ease, transform 0.25s ease;
+    z-index:2;
+  }
+
+  .close-btn:hover{
+    background:rgba(255,255,255,0.9);
+    transform:rotate(90deg);
+  }
+
+  .close-btn:focus-visible{
+    outline:2px solid var(--wax);
+    outline-offset:2px;
+  }
+
+  .letter-heading{
+    font-family:'Mrs Saint Delafield', cursive;
+    font-size:clamp(30px, 5vw, 40px);
+    color:var(--wax);
+    margin:0 0 4px 0;
+    text-align:center;
+  }
+
+  .letter-divider{
+    width:70px;
+    height:1px;
+    background:var(--gold);
+    opacity:0.6;
+    margin:0 auto 30px;
+  }
+
+  .letter-body{
+    font-family:'EB Garamond', serif;
+    font-size:clamp(16px, 2.4vw, 18.5px);
+    line-height:1.9;
+    color:var(--ink);
+  }
+
+  .letter-body p{
+    margin:0 0 1.35em 0;
+    text-align:left;
+    text-wrap:pretty;
+  }
+
+  .letter-body p:first-of-type::first-letter{
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:2.6em;
+    font-weight:600;
+    color:var(--wax);
+    float:left;
+    line-height:0.8;
+    margin:0.08em 0.08em 0 0;
+  }
+
+  .signature{
+    margin-top:10px;
+    text-align:right;
+  }
+
+  .signature .script{
+    font-family:'Mrs Saint Delafield', cursive;
+    font-size:clamp(26px, 4vw, 34px);
+    color:var(--wax);
+  }
+
+  .stamp{
+    display:block;
+    margin:26px auto 0;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, var(--wax-light) 0%, var(--wax) 55%, #4d0f21 100%);
+    box-shadow:0 3px 8px rgba(0,0,0,0.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .stamp svg{
+    width:18px;
+    height:18px;
+    fill:var(--gold-soft);
+    opacity:0.9;
+  }
+
+  .sr-only{
+    position:absolute;
+    width:1px; height:1px;
+    padding:0; margin:-1px;
+    overflow:hidden;
+    clip:rect(0,0,0,0);
+    white-space:nowrap;
+    border:0;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .mote{ animation:none; display:none; }
+    .hint{ animation:none; }
+    .envelope-flap, .envelope-letter, .wax-seal, .overlay, .letter-paper, .close-btn{
+      transition-duration:0.2s;
+    }
+  }
+
+  @media (max-width:420px){
+    .letter-paper{ padding:26px 18px 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" id="sky" aria-hidden="true"></div>
+
+<main class="stage">
+  <p class="eyebrow">para ti</p>
+  <p class="hint" id="hint">toca el sobre para abrirlo</p>
+
+  <div class="scene">
+    <button class="envelope-wrap" id="envelope" aria-label="Abrir el sobre y leer la carta">
+      <div class="envelope-body">
+        <div class="envelope-letter" aria-hidden="true"><span>una carta&hellip;</span></div>
+        <div class="envelope-flap"></div>
+        <div class="wax-seal" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.7-10-9.3C.4 8.6 1.8 5 5.2 4.2 7.6 3.6 9.8 4.8 12 7.6c2.2-2.8 4.4-4 6.8-3.4C22.2 5 23.6 8.6 22 11.7 19.5 16.3 12 21 12 21z"/></svg>
+        </div>
+      </div>
+    </button>
+  </div>
+</main>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Carta de amor">
+  <div class="letter-paper">
+    <button class="close-btn" id="closeBtn" aria-label="Cerrar la carta">&times;</button>
+    <h1 class="letter-heading">Querida mía</h1>
+    <div class="letter-divider"></div>
+    <div class="letter-body">
+      <p>Recuerdo perfectamente nuestra primera interacción. Desde ese momento hubo algo en ti que llamó profundamente mi atención: tu forma de ser, tu alegría y esa manera tan especial que tienes de iluminar los momentos. Esa noche me quedé pensando en ti, imaginando que quizás debí haber pedido tu Instagram para poder conocerte mejor y formar una amistad contigo.</p>
+
+      <p>Pasaron uno o dos meses hasta que finalmente tuve la oportunidad de pedirte tu Instagram, y desde ahí poco a poco comenzamos a acercarnos. Con el tiempo descubrí una persona maravillosa, y quiero agradecerte por haber confiado en mí, por abrirte conmigo y por permitirme conocer una parte de ti con esa confianza tan bonita, a pesar de que al principio éramos solamente dos extraños.</p>
+
+      <p>Nunca imaginé que alguien podría llegar a ocupar un lugar tan importante en mi corazón. Es verdad que desde el comienzo sentía algo especial por ti, pero con cada conversación, cada momento compartido y cada recuerdo creado, ese cariño fue creciendo hasta convertirse en amor.</p>
+
+      <p>Hoy puedo decir que te amo con todo mi corazón. Agradezco profundamente que estés en mi vida, porque tu presencia ha significado mucho para mí. Me hace feliz saber que te tengo a mi lado y que, de alguna manera, hemos construido un vínculo tan especial que nos convierte en familia.</p>
+
+      <p>Gracias por ser tú, por tu confianza, por tu cariño y por todos los momentos que hemos compartido. Espero seguir creando muchos más recuerdos contigo y cuidar siempre este hermoso lazo que tenemos.</p>
+
+      <div class="signature">
+        <p style="margin-bottom:0;">Con todo mi amor,</p>
+        <span class="script">tu persona</span>
+      </div>
+
+      <div class="stamp" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.7-10-9.3C.4 8.6 1.8 5 5.2 4.2 7.6 3.6 9.8 4.8 12 7.6c2.2-2.8 4.4-4 6.8-3.4C22.2 5 23.6 8.6 22 11.7 19.5 16.3 12 21 12 21z"/></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ambient floating motes
+  (function(){
+    var sky = document.getElementById('sky');
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce) return;
+    var count = window.innerWidth < 600 ? 10 : 18;
+    for(var i=0;i<count;i++){
+      var m = document.createElement('div');
+      m.className = 'mote';
+      var left = Math.random()*100;
+      var duration = 9 + Math.random()*10;
+      var delay = Math.random()*12;
+      var driftX = (Math.random()*80 - 40) + 'px';
+      var size = 3 + Math.random()*5;
+      m.style.left = left + 'vw';
+      m.style.width = size + 'px';
+      m.style.height = size + 'px';
+      m.style.animationDuration = duration + 's';
+      m.style.animationDelay = delay + 's';
+      m.style.setProperty('--drift-x', driftX);
+      sky.appendChild(m);
+    }
+  })();
+
+  var envelope = document.getElementById('envelope');
+  var overlay = document.getElementById('overlay');
+  var closeBtn = document.getElementById('closeBtn');
+  var hint = document.getElementById('hint');
+  var opened = false;
+
+  function openEnvelope(){
+    if(opened) return;
+    opened = true;
+    envelope.classList.add('is-open');
+    hint.style.opacity = '0';
+    setTimeout(function(){
+      overlay.classList.add('is-visible');
+      closeBtn.focus();
+    }, 850);
+  }
+
+  function closeOverlay(){
+    overlay.classList.remove('is-visible');
+    envelope.focus();
+  }
+
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      openEnvelope();
+    }
+  });
+
+  closeBtn.addEventListener('click', closeOverlay);
+
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) closeOverlay();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && overlay.classList.contains('is-visible')) closeOverlay();
+  });
+</script>
+
+</body>
+</html>
